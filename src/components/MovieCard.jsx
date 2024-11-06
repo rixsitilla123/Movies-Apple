@@ -11,10 +11,13 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IMG_URL } from '../hooks/useEnv';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { Context } from '../context/Context';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function MovieCard({ item }) {
+	const navigate = useNavigate()
 	const { likedList, setLikedList } = React.useContext(Context)
+	const { savedList, setSavedList } = React.useContext(Context)
 
 	function handleLikedBtnClick() {
 		const likeData = likedList.findIndex(value => value.id == item.id)
@@ -26,18 +29,28 @@ export default function MovieCard({ item }) {
 		}
 	}
 
+	function handleSavedBtnClick() {
+		const saveData = savedList.findIndex(value => value.id == item.id)
+		if (saveData == -1) {
+			setSavedList([...savedList, item])
+		} else {
+			savedList.splice(saveData, 1)
+			setSavedList([...savedList])
+		}
+	}
+
 	return (
-		<Card className='!bg-[#ffffff3d] text-white border-[1.5px] border-white !rounded-[15px]' sx={{ maxWidth: 345 }}>
+		<Card className='!bg-[#ffffff3d] cursor-pointer text-white border-[1.5px] border-white !rounded-[15px]' sx={{ maxWidth: 345 }}>
 			<CardHeader
 				avatar={<Avatar aria-label="recipe"><CardMedia className='!w-[50px] !h-[50px]' component="img" width={50} height={50} image={`${IMG_URL}/${item.backdrop_path}`} alt={item.title} /></Avatar>}
 				title={<h4 className='!text-white line-clamp-1'>{item.title}</h4>}
 				subheader={<span className='!text-white'>{item.release_date}</span>}
 			/>
-			<CardMedia className='!h-[350px]' component="img" image={`${IMG_URL}/${item.poster_path}`} alt="img" />
+			<CardMedia onClick={() => navigate(`/movie/${item.id}`)} className='!h-[350px]' component="img" image={`${IMG_URL}/${item.poster_path}`} alt="img" />
 			<CardContent><Typography className='!line-clamp-3 !text-white' variant="body2" sx={{ color: 'text.secondary' }}>{item.overview}</Typography></CardContent>
 			<CardActions disableSpacing>
-				<IconButton onClick={handleLikedBtnClick} aria-label="liked"><FavoriteIcon className='text-white' /></IconButton>
-				<IconButton aria-label="saved"><BookmarkIcon className='text-white' /></IconButton>
+				<IconButton id="like" onClick={handleLikedBtnClick} aria-label="liked"><FavoriteIcon id="like" className='text-white' /></IconButton>
+				<IconButton onClick={handleSavedBtnClick} aria-label="saved"><BookmarkIcon className='text-white' /></IconButton>
 			</CardActions>
 		</Card>
 	);

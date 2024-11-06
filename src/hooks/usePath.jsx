@@ -2,5 +2,6 @@ export const PATH = {
 	nowPlaying: "/", 
 	popular: "/popular",
 	topRated: "/top-rated",
-	upcoming: "/upcoming"
+	upcoming: "/upcoming",
+	singleMovie: "/movie/:id"
 }
